@@ -1,0 +1,9 @@
+{
+	"name": "ADF-HC-RCM-DEV-Project",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "944c4ac3-b179-42ea-b9a8-1a773d85ae2f",
+		"tenantId": "c19fe505-bf69-4ee4-9e96-6ca50a670293"
+	}
+}
