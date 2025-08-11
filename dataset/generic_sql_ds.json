@@ -15,12 +15,6 @@
 			"db_name": {
 				"type": "String"
 			},
-			"@dataset().schema_name": {
-				"type": "String"
-			},
-			"@dataset().schema_naame": {
-				"type": "String"
-			},
 			"schema_name": {
 				"type": "String"
 			},
