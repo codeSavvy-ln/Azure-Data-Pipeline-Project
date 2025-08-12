@@ -12,7 +12,7 @@
 					"referenceName": "AzureKeyVault_ls",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "adls-dev-access-key"
+				"secretName": "adlsdevaccesskey"
 			}
 		}
 	},
