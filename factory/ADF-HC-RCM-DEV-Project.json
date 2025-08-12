@@ -2,7 +2,7 @@
 	"name": "ADF-HC-RCM-DEV-Project",
 	"properties": {
 		"globalConfigurations": {
-			"PipelineBillingEnabled": "false"
+			"PipelineBillingEnabled": "true"
 		}
 	},
 	"location": "eastus",
