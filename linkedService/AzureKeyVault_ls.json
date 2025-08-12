@@ -1,0 +1,11 @@
+{
+	"name": "AzureKeyVault_ls",
+	"properties": {
+		"description": "Key vault for Azure key vault",
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://key-vault-hc-rcm.vault.azure.net/"
+		}
+	}
+}
