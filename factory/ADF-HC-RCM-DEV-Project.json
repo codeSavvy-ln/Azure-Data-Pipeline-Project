@@ -1,5 +1,10 @@
 {
 	"name": "ADF-HC-RCM-DEV-Project",
+	"properties": {
+		"globalConfigurations": {
+			"PipelineBillingEnabled": "false"
+		}
+	},
 	"location": "eastus",
 	"identity": {
 		"type": "SystemAssigned",
