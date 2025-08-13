@@ -166,7 +166,7 @@
 												"parameters": {
 													"container": "bronze",
 													"filepath": {
-														"value": "@item().targetpath",
+														"value": "@item().targetpath\n",
 														"type": "Expression"
 													},
 													"filename": {
@@ -183,7 +183,7 @@
 												"parameters": {
 													"container": "bronze",
 													"filepath": {
-														"value": "@item().targetpath",
+														"value": "@concat(item().targetpath,'/archive/',formatDateTime(utcNow(),'yyyy'),'/',formatDateTime(utcNow(),'%M'),'/',formatDateTime(utcNow(),'%d'))\n",
 														"type": "Expression"
 													},
 													"filename": {
