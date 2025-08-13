@@ -244,8 +244,8 @@
 												"referenceName": "AzureDatabricksDeltaLakeDataset1",
 												"type": "DatasetReference",
 												"parameters": {
-													"schema_name": "'aa'",
-													"table_name": "'aa'"
+													"schema_name": "audit",
+													"table_name": "load_logs"
 												}
 											}
 										}
@@ -364,8 +364,8 @@
 												"referenceName": "AzureDatabricksDeltaLakeDataset1",
 												"type": "DatasetReference",
 												"parameters": {
-													"schema_name": "'aa'",
-													"table_name": "'aa'"
+													"schema_name": "audit",
+													"table_name": "load_logs"
 												}
 											}
 										}
@@ -479,8 +479,8 @@
 												"referenceName": "AzureDatabricksDeltaLakeDataset1",
 												"type": "DatasetReference",
 												"parameters": {
-													"schema_name": "'aa'",
-													"table_name": "'aa'"
+													"schema_name": "audit",
+													"table_name": "load_logs"
 												}
 											}
 										}
