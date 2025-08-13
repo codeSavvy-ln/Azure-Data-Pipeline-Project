@@ -536,7 +536,7 @@
 														"type": "DatasetReference",
 														"parameters": {
 															"schema_name": "'aa'",
-															"table_name": "'a'"
+															"table_name": "'aa'"
 														}
 													}
 												}
@@ -656,7 +656,7 @@
 														"type": "DatasetReference",
 														"parameters": {
 															"schema_name": "'aa'",
-															"table_name": "'a'"
+															"table_name": "'aa'"
 														}
 													}
 												}
