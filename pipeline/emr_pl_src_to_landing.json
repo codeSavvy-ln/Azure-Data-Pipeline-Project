@@ -134,6 +134,11 @@
 												"storeSettings": {
 													"type": "AzureBlobFSReadSettings",
 													"recursive": true,
+													"wildcardFolderPath": {
+														"value": "@item().targetpath",
+														"type": "Expression"
+													},
+													"wildcardFileName": "@split(item().tablename,'.')[1]",
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {
