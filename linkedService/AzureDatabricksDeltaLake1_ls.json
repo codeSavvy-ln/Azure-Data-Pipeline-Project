@@ -14,7 +14,7 @@
 		"type": "AzureDatabricksDeltaLake",
 		"typeProperties": {
 			"domain": "https://adb-1359214949893833.13.azuredatabricks.net",
-			"clusterId": "0810-082020-zzbdu",
+			"clusterId": "0812-042125-jkrhzeer",
 			"accessToken": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
