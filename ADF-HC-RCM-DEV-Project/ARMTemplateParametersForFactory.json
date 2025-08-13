@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ADF-HC-RCM-DEV-Project"
+		},
+		"hosa_sql_ls_password": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://adlsdevrcm.dfs.core.windows.net/"
+		},
+		"AzureKeyVault_ls_properties_typeProperties_baseUrl": {
+			"value": "https://key-vault-hc-rcm.vault.azure.net/"
+		},
+		"hosa_sql_ls_properties_typeProperties_server": {
+			"value": "prj-emr.database.windows.net"
+		},
+		"hosa_sql_ls_properties_typeProperties_database": {
+			"value": "@{linkedService().db_name}"
+		},
+		"hosa_sql_ls_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		}
+	}
+}
