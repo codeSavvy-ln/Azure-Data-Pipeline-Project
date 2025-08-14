@@ -134,6 +134,14 @@
 												"storeSettings": {
 													"type": "AzureBlobFSReadSettings",
 													"recursive": true,
+													"wildcardFolderPath": {
+														"value": "@item().targetpath",
+														"type": "Expression"
+													},
+													"wildcardFileName": {
+														"value": "@split(item().tablename,'.')[1]",
+														"type": "Expression"
+													},
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {
@@ -175,28 +183,15 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "generic_adls_parquet_copy_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "bronze",
-													"filepath": {
-														"value": "@item().targetpath",
-														"type": "Expression"
-													},
-													"filename": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
-													}
-												}
+												"referenceName": "generic_adls_parquet_ds",
+												"type": "DatasetReference"
 											}
 										],
 										"outputs": [
 											{
-												"referenceName": "generic_adls_parquet_copy_ds",
+												"referenceName": "adls_parquet_hosa_archive_ds",
 												"type": "DatasetReference",
 												"parameters": {
-													"container": "bronze",
-													"filepath": "@concat(item().targetpath, '/archive')",
 													"filename": {
 														"value": "@split(item().tablename,'.')[1]",
 														"type": "Expression"

@@ -1,17 +1,11 @@
 {
-	"name": "generic_adls_parquet_copy_ds",
+	"name": "adls_parquet_hosa_archive_ds",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"container": {
-				"type": "string"
-			},
-			"filepath": {
-				"type": "string"
-			},
 			"filename": {
 				"type": "string"
 			}
@@ -20,7 +14,12 @@
 		"type": "Parquet",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation"
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('hosa/archive/', formatDateTime(utcNow(), 'yyyy'))",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
 			},
 			"compressionCodec": "snappy"
 		},
