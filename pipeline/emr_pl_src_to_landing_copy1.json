@@ -183,18 +183,24 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "generic_adls_parquet_ds",
+												"referenceName": "generic_adls_parquet_copy_ds",
 												"type": "DatasetReference",
 												"parameters": {
 													"container": "bronze",
-													"filepath": "@item().targetpath",
-													"filename": "@split(item().tablename,'.')[1]"
+													"filepath": {
+														"value": "@item().targetpath",
+														"type": "Expression"
+													},
+													"filename": {
+														"value": "@split(item().tablename,'.')[1]",
+														"type": "Expression"
+													}
 												}
 											}
 										],
 										"outputs": [
 											{
-												"referenceName": "generic_adls_parquet_ds",
+												"referenceName": "generic_adls_parquet_copy_ds",
 												"type": "DatasetReference",
 												"parameters": {
 													"container": "bronze",
