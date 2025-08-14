@@ -197,7 +197,7 @@
 												"referenceName": "generic_adls_parquet_copy_ds",
 												"type": "DatasetReference",
 												"parameters": {
-													"container": "silver",
+													"container": "bronze",
 													"filepath": {
 														"value": "@item().targetpath",
 														"type": "Expression"
