@@ -5,6 +5,8 @@
 			{
 				"name": "lkp_emr_config",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -41,6 +43,8 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "lkp_emr_config",
@@ -158,6 +162,114 @@
 												}
 											},
 											"enableStaging": false,
+											"logSettings": {
+												"enableCopyActivityLog": true,
+												"copyActivityLogSettings": {
+													"logLevel": "Warning",
+													"enableReliableLogging": false
+												},
+												"logLocationSettings": {
+													"linkedServiceName": {
+														"referenceName": "AzureDataLakeStorage1",
+														"type": "LinkedServiceReference"
+													},
+													"path": "bronze/hosa"
+												}
+											},
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "generic_adls_parquet_ds",
+												"type": "DatasetReference",
+												"parameters": {
+													"container": "bronze",
+													"filepath": "@item().targetpath",
+													"filename": "@split(item().tablename,'.')[1]"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "generic_adls_parquet_ds",
+												"type": "DatasetReference",
+												"parameters": {
+													"container": "bronze",
+													"filepath": {
+														"value": "@concat(item().targetpath,'/archive/')\n",
+														"type": "Expression"
+													},
+													"filename": {
+														"value": "@split(item().tablename,'.')[1]",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Archive_files_copy1_copy1",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "ParquetSource",
+												"storeSettings": {
+													"type": "AzureBlobFSReadSettings",
+													"recursive": true,
+													"wildcardFolderPath": {
+														"value": "@item().targetpath",
+														"type": "Expression"
+													},
+													"wildcardFileName": {
+														"value": "@split(item().tablename,'.')[1]",
+														"type": "Expression"
+													},
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "ParquetReadSettings"
+												}
+											},
+											"sink": {
+												"type": "ParquetSink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												},
+												"formatSettings": {
+													"type": "ParquetWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"logSettings": {
+												"enableCopyActivityLog": true,
+												"copyActivityLogSettings": {
+													"logLevel": "Warning",
+													"enableReliableLogging": false
+												},
+												"logLocationSettings": {
+													"linkedServiceName": {
+														"referenceName": "AzureDataLakeStorage1",
+														"type": "LinkedServiceReference"
+													},
+													"path": "bronze/hosa"
+												}
+											},
 											"translator": {
 												"type": "TabularTranslator",
 												"typeConversion": true,
@@ -201,6 +313,100 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Archive_files_copy1_copy2",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "hosa",
+							"wildcardFileName": "providers",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							},
+							"path": "bronze/hosa"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "generic_adls_parquet_ds",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"filepath": {
+								"value": "hosa",
+								"type": "Expression"
+							},
+							"filename": {
+								"value": "providers",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "generic_adls_parquet_ds",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"filepath": {
+								"value": "@concat('hosa/','/archive')\n",
+								"type": "Expression"
+							},
+							"filename": {
+								"value": "providers",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"annotations": []
