@@ -194,13 +194,10 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "generic_adls_parquet_copy_ds",
+												"referenceName": "generic_adls_parquet_ds",
 												"type": "DatasetReference",
 												"parameters": {
-													"container": {
-														"value": "bronze",
-														"type": "Expression"
-													},
+													"container": "silver",
 													"filepath": "@concat(item().targetpath, '/archive/', formatDateTime(utcNow(),'yyyy'))",
 													"filename": {
 														"value": "@split(item().tablename,'.')[1]",
