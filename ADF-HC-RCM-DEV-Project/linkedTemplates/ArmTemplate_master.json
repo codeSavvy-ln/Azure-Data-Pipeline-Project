@@ -21,7 +21,7 @@
 		},
 		"hosa_sql_ls_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "prj-emr.database.windows.net"
+			"defaultValue": "hcrcmsqldb.database.windows.net"
 		},
 		"hosa_sql_ls_properties_typeProperties_database": {
 			"type": "string",
@@ -29,7 +29,7 @@
 		},
 		"hosa_sql_ls_properties_typeProperties_userName": {
 			"type": "string",
-			"defaultValue": "sqladmin"
+			"defaultValue": "ankit"
 		},
 		"containerUri": {
 			"type": "string",

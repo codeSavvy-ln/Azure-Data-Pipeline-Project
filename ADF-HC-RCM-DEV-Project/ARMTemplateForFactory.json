@@ -21,7 +21,7 @@
 		},
 		"hosa_sql_ls_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "prj-emr.database.windows.net"
+			"defaultValue": "hcrcmsqldb.database.windows.net"
 		},
 		"hosa_sql_ls_properties_typeProperties_database": {
 			"type": "string",
@@ -29,7 +29,7 @@
 		},
 		"hosa_sql_ls_properties_typeProperties_userName": {
 			"type": "string",
-			"defaultValue": "sqladmin"
+			"defaultValue": "ankit"
 		}
 	},
 	"variables": {
@@ -100,6 +100,8 @@
 								{
 									"name": "File_exists",
 									"type": "GetMetadata",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
@@ -141,6 +143,8 @@
 								{
 									"name": "If Condition1",
 									"type": "IfCondition",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "File_exists",
@@ -178,7 +182,10 @@
 																"value": "@item().targetpath",
 																"type": "Expression"
 															},
-															"wildcardFileName": "@split(item().tablename,'.')[1]",
+															"wildcardFileName": {
+																"value": "@split(item().tablename,'.')[1]",
+																"type": "Expression"
+															},
 															"enablePartitionDiscovery": false
 														},
 														"formatSettings": {
@@ -210,14 +217,8 @@
 														"type": "DatasetReference",
 														"parameters": {
 															"container": "bronze",
-															"filepath": {
-																"value": "@item().targetpath\n",
-																"type": "Expression"
-															},
-															"filename": {
-																"value": "@split(item().tablename,'.')[1]",
-																"type": "Expression"
-															}
+															"filepath": "@item().targetpath",
+															"filename": "@split(item().tablename,'.')[1]"
 														}
 													}
 												],
@@ -245,6 +246,8 @@
 								{
 									"name": "Fetch_Logs",
 									"type": "IfCondition",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "If Condition1",
@@ -263,6 +266,8 @@
 											{
 												"name": "Fetch_Logs1",
 												"type": "Lookup",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [],
 												"policy": {
 													"timeout": "0.12:00:00",
@@ -283,10 +288,7 @@
 													"dataset": {
 														"referenceName": "AzureDatabricksDeltaLakeDataset1",
 														"type": "DatasetReference",
-														"parameters": {
-															"schema_name": "audit",
-															"table_name": "load_logs"
-														}
+														"parameters": {}
 													}
 												}
 											},
@@ -376,6 +378,8 @@
 											{
 												"name": "Insert_Logs_Inc_Load",
 												"type": "Lookup",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [
 													{
 														"activity": "Incremental_Load_CP",
@@ -403,10 +407,7 @@
 													"dataset": {
 														"referenceName": "AzureDatabricksDeltaLakeDataset1",
 														"type": "DatasetReference",
-														"parameters": {
-															"schema_name": "audit",
-															"table_name": "load_logs"
-														}
+														"parameters": {}
 													}
 												}
 											}
@@ -491,6 +492,8 @@
 											{
 												"name": "Insert_logs_full_load",
 												"type": "Lookup",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [
 													{
 														"activity": "full_load_cp",
@@ -518,12 +521,324 @@
 													"dataset": {
 														"referenceName": "AzureDatabricksDeltaLakeDataset1",
 														"type": "DatasetReference",
-														"parameters": {
-															"schema_name": "audit",
-															"table_name": "load_logs"
-														}
+														"parameters": {}
 													}
 												}
+											}
+										]
+									}
+								},
+								{
+									"name": "File_exists_copy1",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "generic_adls_parquet_ds",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"filepath": {
+													"value": "@item().targetpath",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@split(item().tablename,'.')[1]",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"exists"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "ParquetReadSettings"
+										}
+									}
+								},
+								{
+									"name": "Fetch_Logs_copy1",
+									"type": "IfCondition",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [
+										{
+											"activity": "File_exists_copy1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(item().loadtype,'Full')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "Incremental_Load_CP_copy1",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "generic_sql_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"db_name": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"schema_name": {
+																"value": "@split(item().tablename,'.')[0]",
+																"type": "Expression"
+															},
+															"table_name": "@split(item().tablename,'.')[1]"
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "generic_adls_parquet_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"filepath": {
+																"value": "@item().targetpath",
+																"type": "Expression"
+															},
+															"filename": {
+																"value": "@split(item().tablename,'.')[1]",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "full_load_cp_copy1",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "@concat('select *, ''',item().datasource,''' as datasource from ', item().tablename)",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "generic_sql_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"db_name": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"schema_name": {
+																"value": "@split(item().tablename,'.')[0]",
+																"type": "Expression"
+															},
+															"table_name": {
+																"value": "@split(item().tablename,'.')[1]",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "generic_adls_parquet_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"filepath": {
+																"value": "@item().targetpath",
+																"type": "Expression"
+															},
+															"filename": "@split(item().tablename,'.')[1]"
+														}
+													}
+												]
+											}
+										]
+									}
+								},
+								{
+									"name": "If Condition1_copy1",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "File_exists_copy1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(activity('File_exists_copy1').output.exists, true)\n",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Archive_files_copy1",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "ParquetSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"wildcardFolderPath": {
+																"value": "@item().targetpath",
+																"type": "Expression"
+															},
+															"wildcardFileName": {
+																"value": "@split(item().tablename,'.')[1]",
+																"type": "Expression"
+															},
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "ParquetReadSettings"
+														}
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "generic_adls_parquet_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"filepath": "@item().targetpath",
+															"filename": "@split(item().tablename,'.')[1]"
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "generic_adls_parquet_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"filepath": {
+																"value": "@concat(item().targetpath,'/archive/',formatDateTime(utcNow(),'yyyy'),'/',formatDateTime(utcNow(),'%M'),'/',formatDateTime(utcNow(),'%d'))\n",
+																"type": "Expression"
+															},
+															"filename": {
+																"value": "@split(item().tablename,'.')[1]",
+																"type": "Expression"
+															}
+														}
+													}
+												]
 											}
 										]
 									}
@@ -545,6 +860,223 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/emr_pl_src_to_landing_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "lkp_emr_config",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "generic_adls_flat_file_ds",
+								"type": "DatasetReference",
+								"parameters": {
+									"file_path": "emr",
+									"file_name": "load_config.csv",
+									"container": "configs"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "lkp_emr_config",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('lkp_emr_config').output.value\n",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "File_exists_copy1",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "generic_adls_parquet_ds",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"filepath": {
+													"value": "@item().targetpath",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@split(item().tablename,'.')[1]",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"exists"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "ParquetReadSettings"
+										}
+									}
+								},
+								{
+									"name": "If Condition1_copy1",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "File_exists_copy1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(activity('File_exists_copy1').output.exists, true)\n",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Archive_files_copy1",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "ParquetSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"wildcardFolderPath": {
+																"value": "@item().targetpath",
+																"type": "Expression"
+															},
+															"wildcardFileName": {
+																"value": "@split(item().tablename,'.')[1]",
+																"type": "Expression"
+															},
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "ParquetReadSettings"
+														}
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "generic_adls_parquet_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"filepath": "@item().targetpath",
+															"filename": "@split(item().tablename,'.')[1]"
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "generic_adls_parquet_ds",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"filepath": {
+																"value": "@concat(item().targetpath,'/archive/',formatDateTime(utcNow(),'yyyy'),'/',formatDateTime(utcNow(),'%M'),'/',formatDateTime(utcNow(),'%d'))\n",
+																"type": "Expression"
+															},
+															"filename": {
+																"value": "@split(item().tablename,'.')[1]",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/generic_adls_flat_file_ds')]",
+				"[concat(variables('factoryId'), '/datasets/generic_adls_parquet_ds')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureDatabricksDeltaLakeDataset1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -552,14 +1084,6 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricksDeltaLake1_ls",
 					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"schema_name": {
-						"type": "string"
-					},
-					"table_name": {
-						"type": "string"
-					}
 				},
 				"annotations": [],
 				"type": "AzureDatabricksDeltaLakeDataset",
@@ -643,7 +1167,9 @@
 				"type": "Parquet",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobFSLocation"
+						"type": "AzureBlobFSLocation",
+						"folderPath": "hosa",
+						"fileSystem": "bronze"
 					},
 					"compressionCodec": "snappy"
 				},

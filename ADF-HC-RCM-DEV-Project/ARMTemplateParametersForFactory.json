@@ -15,13 +15,13 @@
 			"value": "https://key-vault-hc-rcm.vault.azure.net/"
 		},
 		"hosa_sql_ls_properties_typeProperties_server": {
-			"value": "prj-emr.database.windows.net"
+			"value": "hcrcmsqldb.database.windows.net"
 		},
 		"hosa_sql_ls_properties_typeProperties_database": {
 			"value": "@{linkedService().db_name}"
 		},
 		"hosa_sql_ls_properties_typeProperties_userName": {
-			"value": "sqladmin"
+			"value": "ankit"
 		}
 	}
 }
