@@ -130,7 +130,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"source": {
-												"type": "ParquetSource",
+												"type": "DelimitedTextSource",
 												"storeSettings": {
 													"type": "AzureBlobFSReadSettings",
 													"recursive": true,
@@ -142,7 +142,7 @@
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {
-													"type": "ParquetReadSettings"
+													"type": "DelimitedTextReadSettings"
 												}
 											},
 											"sink": {
@@ -166,18 +166,15 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "generic_adls_parquet_ds",
+												"referenceName": "generic_adls_flat_file_ds",
 												"type": "DatasetReference",
 												"parameters": {
-													"container": "bronze",
-													"filepath": {
-														"value": "@item().targetpath\n",
+													"file_path": "bronze",
+													"file_name": {
+														"value": "@item().targetpath",
 														"type": "Expression"
 													},
-													"filename": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
-													}
+													"container": "@split(item().tablename,'.')[1]"
 												}
 											}
 										],
