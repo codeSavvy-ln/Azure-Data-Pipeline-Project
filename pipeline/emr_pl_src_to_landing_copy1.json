@@ -138,7 +138,10 @@
 														"value": "@item().targetpath",
 														"type": "Expression"
 													},
-													"wildcardFileName": "@split(item().tablename,'.')[1]",
+													"wildcardFileName": {
+														"value": "@split(item().tablename,'.')[1]",
+														"type": "Expression"
+													},
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {
