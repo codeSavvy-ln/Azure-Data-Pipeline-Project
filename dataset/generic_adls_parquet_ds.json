@@ -20,7 +20,9 @@
 		"type": "Parquet",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation"
+				"type": "AzureBlobFSLocation",
+				"folderPath": "hosa",
+				"fileSystem": "bronze"
 			},
 			"compressionCodec": "snappy"
 		},

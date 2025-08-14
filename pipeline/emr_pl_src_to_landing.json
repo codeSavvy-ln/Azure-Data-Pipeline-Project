@@ -205,6 +205,8 @@
 						{
 							"name": "Fetch_Logs",
 							"type": "IfCondition",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "If Condition1",
@@ -242,11 +244,7 @@
 											},
 											"dataset": {
 												"referenceName": "AzureDatabricksDeltaLakeDataset1",
-												"type": "DatasetReference",
-												"parameters": {
-													"schema_name": "audit",
-													"table_name": "load_logs"
-												}
+												"type": "DatasetReference"
 											}
 										}
 									},
@@ -362,11 +360,7 @@
 											},
 											"dataset": {
 												"referenceName": "AzureDatabricksDeltaLakeDataset1",
-												"type": "DatasetReference",
-												"parameters": {
-													"schema_name": "audit",
-													"table_name": "load_logs"
-												}
+												"type": "DatasetReference"
 											}
 										}
 									}
@@ -477,11 +471,7 @@
 											},
 											"dataset": {
 												"referenceName": "AzureDatabricksDeltaLakeDataset1",
-												"type": "DatasetReference",
-												"parameters": {
-													"schema_name": "audit",
-													"table_name": "load_logs"
-												}
+												"type": "DatasetReference"
 											}
 										}
 									}
