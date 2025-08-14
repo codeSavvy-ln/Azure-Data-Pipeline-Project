@@ -21,7 +21,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "hosa/archive",
 				"fileSystem": "bronze"
 			},
 			"compressionCodec": "snappy"
