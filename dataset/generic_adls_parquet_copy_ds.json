@@ -20,7 +20,13 @@
 		"type": "Parquet",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation"
+				"type": "AzureBlobFSLocation",
+				"fileName": "@split(item().tablename,'.')[1]",
+				"folderPath": {
+					"value": "@concat(item().targetpath,'/archive')",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
 			},
 			"compressionCodec": "snappy"
 		},
