@@ -199,7 +199,7 @@
 												"parameters": {
 													"container": "bronze",
 													"filepath": {
-														"value": "@item().targetpath",
+														"value": "@concat(item().targetpath, '/archive')",
 														"type": "Expression"
 													},
 													"filename": {
