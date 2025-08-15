@@ -198,7 +198,8 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"filename": "@split(item().tablename,'.')[1]",
-													"filepath": "@concat('hosa/archive/', formatDateTime(utcNow(), 'yyyy'),'/',formatDateTime(utcNow(), 'MM'),'/',formatDateTime(utcNow(), 'dd'))"
+													"filepath": "@concat('hosa/archive/', formatDateTime(utcNow(), 'yyyy'),'/',formatDateTime(utcNow(), 'MM'),'/',formatDateTime(utcNow(), 'dd'))",
+													"container": "container"
 												}
 											}
 										]
