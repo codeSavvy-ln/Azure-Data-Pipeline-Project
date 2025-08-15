@@ -12,7 +12,7 @@
 			"filepath": {
 				"type": "string"
 			},
-			"filename": {
+			"file_name": {
 				"type": "string"
 			}
 		},
@@ -21,7 +21,18 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": "bronze"
+				"fileName": {
+					"value": "@dataset().file_name",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().filepath",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
 			"compressionCodec": "snappy"
 		},
