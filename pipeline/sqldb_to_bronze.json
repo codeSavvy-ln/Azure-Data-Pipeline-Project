@@ -3,13 +3,13 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Fetch_Logs_copy2",
+				"name": "Fetch_Logs",
 				"type": "IfCondition",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(pipeline().parameters.Load_type,'Full')",
+						"value": "@equals(pipeline().parameters.Load_Type,'Full')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -276,6 +276,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"Load_Type": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
