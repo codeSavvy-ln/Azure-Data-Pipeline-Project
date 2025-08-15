@@ -14,10 +14,8 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fetch_Logs1_copy2",
+							"name": "Fetch_Logs1",
 							"type": "Lookup",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -31,22 +29,26 @@
 								"source": {
 									"type": "AzureDatabricksDeltaLakeSource",
 									"query": {
-										"value": "@concat('select coalesce(cast(max(loaddate) as date),''','1900-01-01',''') as last_fetched_date from audit.load_logs where',' data_source=''',item().datasource,''' and tablename=''',item().tablename,'''')\n",
+										"value": "@concat('select coalesce(cast(max(loaddate) as date),''','1900-01-01',''') as last_fetched_date from audit.load_logs where',' data_source=''',pipeline().parameters.datasource,''' and tablename=''',pipeline().parameters.tablename,'''')\n",
 										"type": "Expression"
 									}
 								},
 								"dataset": {
 									"referenceName": "AzureDatabricksDeltaLakeDataset1",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "'aa'",
+										"table_name": "'aa'"
+									}
 								}
 							}
 						},
 						{
-							"name": "Incremental_Load_CP_copy2",
+							"name": "Incremental_Load_CP",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Fetch_Logs1_copy2",
+									"activity": "Fetch_Logs1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -64,7 +66,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('select *,''',item().datasource,''' as datasource from ',item().tablename,' where ',item().watermark,' >= ''',activity('Fetch_Logs1').output.firstRow.last_fetched_date,'''')\n",
+										"value": "@concat('select *,''',pipeline().parameters.datasource,''' as datasource from ',pipeline().parameters.tablename,' where ',pipeline().parameters.watermark,' >= ''',activity('Fetch_Logs1').output.firstRow.last_fetched_date,'''')\n",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -95,14 +97,17 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"db_name": {
-											"value": "@item().database",
+											"value": "@pipeline().parameters.database",
 											"type": "Expression"
 										},
 										"schema_name": {
-											"value": "@split(item().tablename,'.')[0]",
+											"value": "@split(pipeline().parameters.tablename,'.')[0]",
 											"type": "Expression"
 										},
-										"table_name": "@split(item().tablename,'.')[1]"
+										"table_name": {
+											"value": "@split(pipeline().parameters.tablename,'.')[1]",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -113,11 +118,11 @@
 									"parameters": {
 										"container": "bronze",
 										"filepath": {
-											"value": "@item().targetpath",
+											"value": "@pipeline().parameters.targetpath",
 											"type": "Expression"
 										},
 										"file_name": {
-											"value": "@split(item().tablename,'.')[1]",
+											"value": "@split(pipeline().parameters.tablename,'.')[1]",
 											"type": "Expression"
 										}
 									}
@@ -125,13 +130,11 @@
 							]
 						},
 						{
-							"name": "Insert_Logs_Inc_Load_copy2",
+							"name": "Insert_Logs_Inc_Load",
 							"type": "Lookup",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
-									"activity": "Incremental_Load_CP_copy2",
+									"activity": "Incremental_Load_CP",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -149,13 +152,17 @@
 								"source": {
 									"type": "AzureDatabricksDeltaLakeSource",
 									"query": {
-										"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',item().datasource,''', ''',item().tablename,''',''',activity('Incremental_Load_CP').output.rowscopied,''',''',item().watermark,''',''',utcNow(),''')')\n",
+										"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',pipeline().parameters.datasource,''', ''',pipeline().parameters.tablename,''',''',activity('Incremental_Load_CP').output.rowscopied,''',''',pipeline().parameters.watermark,''',''',utcNow(),''')')\n",
 										"type": "Expression"
 									}
 								},
 								"dataset": {
 									"referenceName": "AzureDatabricksDeltaLakeDataset1",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "'aa'",
+										"table_name": "'aa'"
+									}
 								}
 							}
 						}
@@ -177,7 +184,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('select *, ''',item().datasource,''' as datasource from ', item().tablename)",
+										"value": "@concat('select *, ''',pipeline().parameters.datasource,''' as datasource from ', pipeline().parameters.tablename)",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -208,15 +215,15 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"db_name": {
-											"value": "@item().database",
+											"value": "@pipeline().parameters.database",
 											"type": "Expression"
 										},
 										"schema_name": {
-											"value": "@split(item().tablename,'.')[0]",
+											"value": "@split(pipeline().parameters.tablename,'.')[0]",
 											"type": "Expression"
 										},
 										"table_name": {
-											"value": "@split(item().tablename,'.')[1]",
+											"value": "@split(pipeline().parameters.tablename,'.')[1]",
 											"type": "Expression"
 										}
 									}
@@ -229,19 +236,20 @@
 									"parameters": {
 										"container": "bronze",
 										"filepath": {
-											"value": "@item().targetpath",
+											"value": "@pipeline().parameters.targetpath",
 											"type": "Expression"
 										},
-										"file_name": "@split(item().tablename,'.')[1]"
+										"file_name": {
+											"value": "@split(pipeline().parameters.tablename,'.')[1]",
+											"type": "Expression"
+										}
 									}
 								}
 							]
 						},
 						{
-							"name": "Insert_logs_full_load_copy2",
+							"name": "Insert_logs_full_load",
 							"type": "Lookup",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "full_load_cp",
@@ -262,13 +270,17 @@
 								"source": {
 									"type": "AzureDatabricksDeltaLakeSource",
 									"query": {
-										"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',item().datasource,''', ''',item().tablename,''',''',activity('full_load_cp').output.rowscopied,''',''',item().watermark,''',''',utcNow(),''')')",
+										"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',pipeline().parameters.datasource,''', ''',pipeline().parameters.tablename,''',''',activity('full_load_cp').output.rowscopied,''',''',pipeline().parameters.watermark,''',''',utcNow(),''')')",
 										"type": "Expression"
 									}
 								},
 								"dataset": {
 									"referenceName": "AzureDatabricksDeltaLakeDataset1",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "'aa'",
+										"table_name": "'aa'"
+									}
 								}
 							}
 						}
@@ -278,6 +290,21 @@
 		],
 		"parameters": {
 			"Load_Type": {
+				"type": "string"
+			},
+			"database": {
+				"type": "string"
+			},
+			"tablename": {
+				"type": "string"
+			},
+			"datasource": {
+				"type": "string"
+			},
+			"targetpath": {
+				"type": "string"
+			},
+			"watermark": {
 				"type": "string"
 			}
 		},
