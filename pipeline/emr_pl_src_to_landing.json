@@ -60,8 +60,6 @@
 						{
 							"name": "File_exists",
 							"type": "GetMetadata",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -81,7 +79,7 @@
 											"value": "@item().targetpath",
 											"type": "Expression"
 										},
-										"filename": {
+										"file_name": {
 											"value": "@split(item().tablename,'.')[1]",
 											"type": "Expression"
 										}
@@ -103,8 +101,6 @@
 						{
 							"name": "If Condition1",
 							"type": "IfCondition",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "File_exists",
@@ -138,11 +134,6 @@
 												"storeSettings": {
 													"type": "AzureBlobFSReadSettings",
 													"recursive": true,
-													"wildcardFolderPath": {
-														"value": "@item().targetpath",
-														"type": "Expression"
-													},
-													"wildcardFileName": "@split(item().tablename,'.')[1]",
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {
@@ -175,7 +166,7 @@
 												"parameters": {
 													"container": "bronze",
 													"filepath": "@item().targetpath",
-													"filename": "@split(item().tablename,'.')[1]"
+													"file_name": "@split(item().tablename,'.')[1]"
 												}
 											}
 										],
@@ -189,7 +180,7 @@
 														"value": "@concat(item().targetpath,'/archive/',formatDateTime(utcNow(),'yyyy'),'/',formatDateTime(utcNow(),'%M'),'/',formatDateTime(utcNow(),'%d'))\n",
 														"type": "Expression"
 													},
-													"filename": {
+													"file_name": {
 														"value": "@split(item().tablename,'.')[1]",
 														"type": "Expression"
 													}
@@ -201,10 +192,8 @@
 							}
 						},
 						{
-							"name": "Fetch_Logs",
+							"name": "If Condition2",
 							"type": "IfCondition",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "If Condition1",
@@ -216,580 +205,276 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@equals(item().loadtype,'Full')",
-									"type": "Expression"
-								},
-								"ifFalseActivities": [
-									{
-										"name": "Fetch_Logs1",
-										"type": "Lookup",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "AzureDatabricksDeltaLakeSource",
-												"query": {
-													"value": "@concat('select coalesce(cast(max(loaddate) as date),''','1900-01-01',''') as last_fetched_date from audit.load_logs where',' data_source=''',item().datasource,''' and tablename=''',item().tablename,'''')\n",
-													"type": "Expression"
-												}
-											},
-											"dataset": {
-												"referenceName": "AzureDatabricksDeltaLakeDataset1",
-												"type": "DatasetReference"
-											}
-										}
-									},
-									{
-										"name": "Incremental_Load_CP",
-										"type": "Copy",
-										"dependsOn": [
-											{
-												"activity": "Fetch_Logs1",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "AzureSqlSource",
-												"sqlReaderQuery": {
-													"value": "@concat('select *,''',item().datasource,''' as datasource from ',item().tablename,' where ',item().watermark,' >= ''',activity('Fetch_Logs1').output.firstRow.last_fetched_date,'''')\n",
-													"type": "Expression"
-												},
-												"queryTimeout": "02:00:00",
-												"partitionOption": "None"
-											},
-											"sink": {
-												"type": "ParquetSink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings"
-												},
-												"formatSettings": {
-													"type": "ParquetWriteSettings"
-												}
-											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"typeConversion": true,
-												"typeConversionSettings": {
-													"allowDataTruncation": true,
-													"treatBooleanAsNumber": false
-												}
-											}
-										},
-										"inputs": [
-											{
-												"referenceName": "generic_sql_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"db_name": {
-														"value": "@item().database",
-														"type": "Expression"
-													},
-													"schema_name": {
-														"value": "@split(item().tablename,'.')[0]",
-														"type": "Expression"
-													},
-													"table_name": "@split(item().tablename,'.')[1]"
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "generic_adls_parquet_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "bronze",
-													"filepath": {
-														"value": "@item().targetpath",
-														"type": "Expression"
-													},
-													"filename": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									},
-									{
-										"name": "Insert_Logs_Inc_Load",
-										"type": "Lookup",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
-										"dependsOn": [
-											{
-												"activity": "Incremental_Load_CP",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "AzureDatabricksDeltaLakeSource",
-												"query": {
-													"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',item().datasource,''', ''',item().tablename,''',''',activity('Incremental_Load_CP').output.rowscopied,''',''',item().watermark,''',''',utcNow(),''')')\n",
-													"type": "Expression"
-												}
-											},
-											"dataset": {
-												"referenceName": "AzureDatabricksDeltaLakeDataset1",
-												"type": "DatasetReference"
-											}
-										}
-									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "full_load_cp",
-										"type": "Copy",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "AzureSqlSource",
-												"sqlReaderQuery": {
-													"value": "@concat('select *, ''',item().datasource,''' as datasource from ', item().tablename)",
-													"type": "Expression"
-												},
-												"queryTimeout": "02:00:00",
-												"partitionOption": "None"
-											},
-											"sink": {
-												"type": "ParquetSink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings"
-												},
-												"formatSettings": {
-													"type": "ParquetWriteSettings"
-												}
-											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"typeConversion": true,
-												"typeConversionSettings": {
-													"allowDataTruncation": true,
-													"treatBooleanAsNumber": false
-												}
-											}
-										},
-										"inputs": [
-											{
-												"referenceName": "generic_sql_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"db_name": {
-														"value": "@item().database",
-														"type": "Expression"
-													},
-													"schema_name": {
-														"value": "@split(item().tablename,'.')[0]",
-														"type": "Expression"
-													},
-													"table_name": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
-													}
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "generic_adls_parquet_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "bronze",
-													"filepath": {
-														"value": "@item().targetpath",
-														"type": "Expression"
-													},
-													"filename": "@split(item().tablename,'.')[1]"
-												}
-											}
-										]
-									},
-									{
-										"name": "Insert_logs_full_load",
-										"type": "Lookup",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
-										"dependsOn": [
-											{
-												"activity": "full_load_cp",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "AzureDatabricksDeltaLakeSource",
-												"query": {
-													"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',item().datasource,''', ''',item().tablename,''',''',activity('full_load_cp').output.rowscopied,''',''',item().watermark,''',''',utcNow(),''')')",
-													"type": "Expression"
-												}
-											},
-											"dataset": {
-												"referenceName": "AzureDatabricksDeltaLakeDataset1",
-												"type": "DatasetReference"
-											}
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "File_exists_copy1",
-							"type": "GetMetadata",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "generic_adls_parquet_ds",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": "bronze",
-										"filepath": {
-											"value": "@item().targetpath",
-											"type": "Expression"
-										},
-										"filename": {
-											"value": "@split(item().tablename,'.')[1]",
-											"type": "Expression"
-										}
-									}
-								},
-								"fieldList": [
-									"exists"
-								],
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							}
-						},
-						{
-							"name": "Fetch_Logs_copy1",
-							"type": "IfCondition",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [
-								{
-									"activity": "File_exists_copy1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"expression": {
-									"value": "@equals(item().loadtype,'Full')",
-									"type": "Expression"
-								},
-								"ifFalseActivities": [
-									{
-										"name": "Incremental_Load_CP_copy1",
-										"type": "Copy",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "AzureSqlSource",
-												"queryTimeout": "02:00:00",
-												"partitionOption": "None"
-											},
-											"sink": {
-												"type": "ParquetSink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings"
-												},
-												"formatSettings": {
-													"type": "ParquetWriteSettings"
-												}
-											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"typeConversion": true,
-												"typeConversionSettings": {
-													"allowDataTruncation": true,
-													"treatBooleanAsNumber": false
-												}
-											}
-										},
-										"inputs": [
-											{
-												"referenceName": "generic_sql_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"db_name": {
-														"value": "@item().database",
-														"type": "Expression"
-													},
-													"schema_name": {
-														"value": "@split(item().tablename,'.')[0]",
-														"type": "Expression"
-													},
-													"table_name": "@split(item().tablename,'.')[1]"
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "generic_adls_parquet_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "bronze",
-													"filepath": {
-														"value": "@item().targetpath",
-														"type": "Expression"
-													},
-													"filename": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "full_load_cp_copy1",
-										"type": "Copy",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "AzureSqlSource",
-												"sqlReaderQuery": {
-													"value": "@concat('select *, ''',item().datasource,''' as datasource from ', item().tablename)",
-													"type": "Expression"
-												},
-												"queryTimeout": "02:00:00",
-												"partitionOption": "None"
-											},
-											"sink": {
-												"type": "ParquetSink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings"
-												},
-												"formatSettings": {
-													"type": "ParquetWriteSettings"
-												}
-											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"typeConversion": true,
-												"typeConversionSettings": {
-													"allowDataTruncation": true,
-													"treatBooleanAsNumber": false
-												}
-											}
-										},
-										"inputs": [
-											{
-												"referenceName": "generic_sql_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"db_name": {
-														"value": "@item().database",
-														"type": "Expression"
-													},
-													"schema_name": {
-														"value": "@split(item().tablename,'.')[0]",
-														"type": "Expression"
-													},
-													"table_name": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
-													}
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "generic_adls_parquet_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "bronze",
-													"filepath": {
-														"value": "@item().targetpath",
-														"type": "Expression"
-													},
-													"filename": "@split(item().tablename,'.')[1]"
-												}
-											}
-										]
-									}
-								]
-							}
-						},
-						{
-							"name": "If Condition1_copy1",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "File_exists_copy1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"expression": {
-									"value": "@equals(activity('File_exists_copy1').output.exists, true)\n",
+									"value": "@equals(item().is_active,'1')",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Archive_files_copy1",
-										"type": "Copy",
+										"name": "Fetch_Logs",
+										"type": "IfCondition",
 										"dependsOn": [],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
 										"userProperties": [],
 										"typeProperties": {
-											"source": {
-												"type": "ParquetSource",
-												"storeSettings": {
-													"type": "AzureBlobFSReadSettings",
-													"recursive": true,
-													"wildcardFolderPath": {
-														"value": "@item().targetpath",
-														"type": "Expression"
-													},
-													"wildcardFileName": "@split(item().tablename,'.')[1]",
-													"enablePartitionDiscovery": false
-												},
-												"formatSettings": {
-													"type": "ParquetReadSettings"
-												}
+											"expression": {
+												"value": "@equals(item().loadtype,'Full')",
+												"type": "Expression"
 											},
-											"sink": {
-												"type": "ParquetSink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings"
-												},
-												"formatSettings": {
-													"type": "ParquetWriteSettings"
-												}
-											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"typeConversion": true,
-												"typeConversionSettings": {
-													"allowDataTruncation": true,
-													"treatBooleanAsNumber": false
-												}
-											}
-										},
-										"inputs": [
-											{
-												"referenceName": "generic_adls_parquet_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "bronze",
-													"filepath": "@item().targetpath",
-													"filename": "@split(item().tablename,'.')[1]"
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "generic_adls_parquet_ds",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "bronze",
-													"filepath": {
-														"value": "@concat(item().targetpath,'/archive/',formatDateTime(utcNow(),'yyyy'),'/',formatDateTime(utcNow(),'%M'),'/',formatDateTime(utcNow(),'%d'))\n",
-														"type": "Expression"
+											"ifFalseActivities": [
+												{
+													"name": "Fetch_Logs1",
+													"type": "Lookup",
+													"dependsOn": [],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
 													},
-													"filename": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
+													"userProperties": [],
+													"typeProperties": {
+														"source": {
+															"type": "AzureDatabricksDeltaLakeSource",
+															"query": {
+																"value": "@concat('select coalesce(cast(max(loaddate) as date),''','1900-01-01',''') as last_fetched_date from audit.load_logs where',' data_source=''',item().datasource,''' and tablename=''',item().tablename,'''')\n",
+																"type": "Expression"
+															}
+														},
+														"dataset": {
+															"referenceName": "AzureDatabricksDeltaLakeDataset1",
+															"type": "DatasetReference"
+														}
+													}
+												},
+												{
+													"name": "Incremental_Load_CP",
+													"type": "Copy",
+													"dependsOn": [
+														{
+															"activity": "Fetch_Logs1",
+															"dependencyConditions": [
+																"Succeeded"
+															]
+														}
+													],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
+													},
+													"userProperties": [],
+													"typeProperties": {
+														"source": {
+															"type": "AzureSqlSource",
+															"sqlReaderQuery": {
+																"value": "@concat('select *,''',item().datasource,''' as datasource from ',item().tablename,' where ',item().watermark,' >= ''',activity('Fetch_Logs1').output.firstRow.last_fetched_date,'''')\n",
+																"type": "Expression"
+															},
+															"queryTimeout": "02:00:00",
+															"partitionOption": "None"
+														},
+														"sink": {
+															"type": "ParquetSink",
+															"storeSettings": {
+																"type": "AzureBlobFSWriteSettings"
+															},
+															"formatSettings": {
+																"type": "ParquetWriteSettings"
+															}
+														},
+														"enableStaging": false,
+														"translator": {
+															"type": "TabularTranslator",
+															"typeConversion": true,
+															"typeConversionSettings": {
+																"allowDataTruncation": true,
+																"treatBooleanAsNumber": false
+															}
+														}
+													},
+													"inputs": [
+														{
+															"referenceName": "generic_sql_ds",
+															"type": "DatasetReference",
+															"parameters": {
+																"db_name": {
+																	"value": "@item().database",
+																	"type": "Expression"
+																},
+																"schema_name": {
+																	"value": "@split(item().tablename,'.')[0]",
+																	"type": "Expression"
+																},
+																"table_name": "@split(item().tablename,'.')[1]"
+															}
+														}
+													],
+													"outputs": [
+														{
+															"referenceName": "generic_adls_parquet_ds",
+															"type": "DatasetReference",
+															"parameters": {
+																"container": "bronze",
+																"filepath": {
+																	"value": "@item().targetpath",
+																	"type": "Expression"
+																},
+																"file_name": {
+																	"value": "@split(item().tablename,'.')[1]",
+																	"type": "Expression"
+																}
+															}
+														}
+													]
+												},
+												{
+													"name": "Insert_Logs_Inc_Load",
+													"type": "Lookup",
+													"dependsOn": [
+														{
+															"activity": "Incremental_Load_CP",
+															"dependencyConditions": [
+																"Succeeded"
+															]
+														}
+													],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
+													},
+													"userProperties": [],
+													"typeProperties": {
+														"source": {
+															"type": "AzureDatabricksDeltaLakeSource",
+															"query": {
+																"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',item().datasource,''', ''',item().tablename,''',''',activity('Incremental_Load_CP').output.rowscopied,''',''',item().watermark,''',''',utcNow(),''')')\n",
+																"type": "Expression"
+															}
+														},
+														"dataset": {
+															"referenceName": "AzureDatabricksDeltaLakeDataset1",
+															"type": "DatasetReference"
+														}
 													}
 												}
-											}
-										]
+											],
+											"ifTrueActivities": [
+												{
+													"name": "full_load_cp",
+													"type": "Copy",
+													"dependsOn": [],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
+													},
+													"userProperties": [],
+													"typeProperties": {
+														"source": {
+															"type": "AzureSqlSource",
+															"sqlReaderQuery": {
+																"value": "@concat('select *, ''',item().datasource,''' as datasource from ', item().tablename)",
+																"type": "Expression"
+															},
+															"queryTimeout": "02:00:00",
+															"partitionOption": "None"
+														},
+														"sink": {
+															"type": "ParquetSink",
+															"storeSettings": {
+																"type": "AzureBlobFSWriteSettings"
+															},
+															"formatSettings": {
+																"type": "ParquetWriteSettings"
+															}
+														},
+														"enableStaging": false,
+														"translator": {
+															"type": "TabularTranslator",
+															"typeConversion": true,
+															"typeConversionSettings": {
+																"allowDataTruncation": true,
+																"treatBooleanAsNumber": false
+															}
+														}
+													},
+													"inputs": [
+														{
+															"referenceName": "generic_sql_ds",
+															"type": "DatasetReference",
+															"parameters": {
+																"db_name": {
+																	"value": "@item().database",
+																	"type": "Expression"
+																},
+																"schema_name": {
+																	"value": "@split(item().tablename,'.')[0]",
+																	"type": "Expression"
+																},
+																"table_name": {
+																	"value": "@split(item().tablename,'.')[1]",
+																	"type": "Expression"
+																}
+															}
+														}
+													],
+													"outputs": [
+														{
+															"referenceName": "generic_adls_parquet_ds",
+															"type": "DatasetReference",
+															"parameters": {
+																"container": "bronze",
+																"filepath": {
+																	"value": "@item().targetpath",
+																	"type": "Expression"
+																},
+																"file_name": "@split(item().tablename,'.')[1]"
+															}
+														}
+													]
+												},
+												{
+													"name": "Insert_logs_full_load",
+													"type": "Lookup",
+													"dependsOn": [
+														{
+															"activity": "full_load_cp",
+															"dependencyConditions": [
+																"Succeeded"
+															]
+														}
+													],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
+													},
+													"userProperties": [],
+													"typeProperties": {
+														"source": {
+															"type": "AzureDatabricksDeltaLakeSource",
+															"query": {
+																"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''',item().datasource,''', ''',item().tablename,''',''',activity('full_load_cp').output.rowscopied,''',''',item().watermark,''',''',utcNow(),''')')",
+																"type": "Expression"
+															}
+														},
+														"dataset": {
+															"referenceName": "AzureDatabricksDeltaLakeDataset1",
+															"type": "DatasetReference"
+														}
+													}
+												}
+											]
+										}
 									}
 								]
 							}
