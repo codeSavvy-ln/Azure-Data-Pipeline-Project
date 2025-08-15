@@ -197,14 +197,8 @@
 												"referenceName": "adls_parquet_hosa_archive_ds",
 												"type": "DatasetReference",
 												"parameters": {
-													"filename": {
-														"value": "@split(item().tablename,'.')[1]",
-														"type": "Expression"
-													},
-													"filepath": {
-														"value": "@concat(item().targetpath,item().archive,formatDateTime(utcNow(), 'yyyy'),'/',formatDateTime(utcNow(), 'MM'),'/',formatDateTime(utcNow(), 'dd'))",
-														"type": "Expression"
-													}
+													"filename": "@split(item().tablename,'.')[1]",
+													"filepath": "@concat('hosa/archive/', formatDateTime(utcNow(), 'yyyy'),'/',formatDateTime(utcNow(), 'MM'),'/',formatDateTime(utcNow(), 'dd'))"
 												}
 											}
 										]
