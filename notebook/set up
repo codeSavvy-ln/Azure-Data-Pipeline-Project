@@ -1,0 +1,2 @@
+Audit_Table - To create and store audit related details whenever you run the data pipeline.
+ADLS_mount - Mount the Azure containers (Lanidng, Bronze, Silver, Gold) with Azure databricks
