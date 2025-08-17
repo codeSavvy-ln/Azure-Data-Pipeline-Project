@@ -64,13 +64,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Encounters",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Encounters"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -92,13 +86,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Providers_F",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Providers_F"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -120,13 +108,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Claims",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Claims"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -148,13 +130,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Patient",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Patient"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -176,13 +152,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Transactions",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Transactions"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -211,13 +181,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_provider",
-					"baseParameters": {
-						"input": {
-							"value": "@activity('silver_departments_F').output",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_provider"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -246,13 +210,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_patient",
-					"baseParameters": {
-						"input": {
-							"value": "@activity('silver_departments_F').output",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_patient"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -281,13 +239,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/fact_transaction",
-					"baseParameters": {
-						"input": {
-							"value": "@activity('silver_departments_F').output",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/fact_transaction"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -309,13 +261,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/CPT codes",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/CPT codes"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -337,13 +283,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/ICD Code",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/ICD Code"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -365,13 +305,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/NPI",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/NPI"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -400,13 +334,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_cpt_code",
-					"baseParameters": {
-						"input": {
-							"value": "@activity('silver_departments_F').output",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_cpt_code"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -435,13 +363,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_icd_code",
-					"baseParameters": {
-						"input": {
-							"value": "@activity('silver_departments_F').output",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_icd_code"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -470,13 +392,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_npi",
-					"baseParameters": {
-						"input": {
-							"value": "@activity('silver_departments_F').output",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_npi"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
