@@ -222,10 +222,7 @@
 												"referenceName": "sqldb_to_bronze",
 												"type": "PipelineReference"
 											},
-											"waitOnCompletion": true,
-											"parameters": {
-												"tablename": "@pipeline().parameters.Load_Type"
-											}
+											"waitOnCompletion": true
 										}
 									}
 								]
