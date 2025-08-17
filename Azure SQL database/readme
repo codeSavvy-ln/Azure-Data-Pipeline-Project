@@ -1,2 +1,2 @@
-hospital_a - Contains queries to create schema and tables for hospital-a database and store the data in the respective tables in Azure SQL Database.
-hospital_b - Contains queries to create schema and tables for hospital-b database and store the data in the respective tables in Azure SQL Database.
+hospital-a - Contains queries to create schema and tables for hospital-a database and store the data in the respective tables in Azure SQL Database.
+hospital-b - Contains queries to create schema and tables for hospital-b database and store the data in the respective tables in Azure SQL Database.
