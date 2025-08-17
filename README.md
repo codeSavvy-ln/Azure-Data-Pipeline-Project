@@ -1,4 +1,11 @@
-# Azure-Data-Pipeline-Project
+# Azure-Data-Engineering-Project
+**End-to-End Data Pipeline Implementation Using Azure**
+
+---
+
+## **Project Overview**  
+This project demonstrates an end-to-end data engineering solution built using Microsoft Azure. The pipeline automates data ingestion, transformation, and storage, providing an efficient and scalable system for managing enterprise data.  
+
 
 ## **Project Structure**
 ```
@@ -23,8 +30,6 @@
 ├── README.md
 ├── dataset
     ├── AzureDatabricksDeltaLakeDataset1.json
-    ├── adls_parquet_hosa_archive_ds.json
-    ├── adls_parquet_hosb_archive_ds.json
     ├── generic_adls_flat_file_ds.json
     ├── generic_adls_parquet_ds.json
     └── generic_sql_ds.json
@@ -77,11 +82,8 @@
     │   ├── Transactions.py
     │   └── readme
 ├── pipeline
-    ├── Azuredatabricks.json
     ├── emr_pl_src_to_landing.json
-    ├── emr_pl_src_to_landing_copy1.json
     ├── silver_to_gold.json
-    └── sqldb_to_bronze.json
 └── publish_config.json
 ```
 
@@ -93,5 +95,5 @@
 - **Azure Key Vault**
 - **Data Sources:**
     - **Azure SQL Database**
-    - **Azure storage:** ADLS Gen2, Flat files(csv), Azure Delta lake, Parquet.
+    - **Azure storage:** ADLS Gen2, Flat files(csv), Parquet.
     - **API:** ICD code, NPI.
