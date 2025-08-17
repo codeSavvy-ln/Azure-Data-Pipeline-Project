@@ -23,6 +23,9 @@
 		"hosa_sql_ls_properties_typeProperties_userName": {
 			"value": "ankit"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"value": "0812-042125-jkrhzeer"
+		},
 		"containerUri": {
 			"value": ""
 		},
