@@ -15,7 +15,13 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Departments_F"
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Departments_F",
+					"baseParameters": {
+						"input": {
+							"value": "@pipeline().parameters.name",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -23,6 +29,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"name": {
+				"type": "string",
+				"defaultValue": "/path/filename"
+			}
+		},
 		"annotations": []
 	}
 }
