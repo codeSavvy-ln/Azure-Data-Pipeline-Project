@@ -25,8 +25,6 @@
 			{
 				"name": "gold_dim_deprtments",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "silver_departments_F",
@@ -44,13 +42,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_department",
-					"baseParameters": {
-						"input": {
-							"value": "@activity('silver_departments_F').output",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_department"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -387,11 +379,18 @@
 				}
 			},
 			{
-				"name": "trial",
+				"name": "gold_cpt_code",
 				"type": "DatabricksNotebook",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "silver_cpt_code",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -401,7 +400,83 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Untitled Notebook 2025-08-17 13:02:49"
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_cpt_code",
+					"baseParameters": {
+						"input": {
+							"value": "@activity('silver_departments_F').output",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_icd_code",
+				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "silver_icd_code",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_icd_code",
+					"baseParameters": {
+						"input": {
+							"value": "@activity('silver_departments_F').output",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_npi",
+				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "silver_npi",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_npi",
+					"baseParameters": {
+						"input": {
+							"value": "@activity('silver_departments_F').output",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
