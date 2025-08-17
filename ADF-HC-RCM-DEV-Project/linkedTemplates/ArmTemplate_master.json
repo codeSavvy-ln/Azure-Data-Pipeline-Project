@@ -15,6 +15,10 @@
 			"type": "string",
 			"defaultValue": "https://adlsdevrcm.dfs.core.windows.net/"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0812-042125-jkrhzeer"
+		},
 		"AzureKeyVault_ls_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://key-vault-hc-rcm.vault.azure.net/"
@@ -30,10 +34,6 @@
 		"hosa_sql_ls_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "ankit"
-		},
-		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
-			"type": "string",
-			"defaultValue": "0812-042125-jkrhzeer"
 		},
 		"containerUri": {
 			"type": "string",
