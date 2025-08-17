@@ -13,11 +13,7 @@
 				},
 				"secretName": "hcabdws"
 			},
-			"newClusterNodeType": "Standard_D2ds_v6",
-			"newClusterNumOfWorker": "1",
-			"newClusterVersion": "15.4.x-scala2.12",
-			"clusterOption": "Fixed",
-			"newClusterInitScripts": []
+			"existingClusterId": "0812-042125-jkrhzeer"
 		}
 	}
 }
