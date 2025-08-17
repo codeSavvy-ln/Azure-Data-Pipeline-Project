@@ -311,7 +311,7 @@
 				}
 			},
 			{
-				"name": "silver_transactions_copy1",
+				"name": "silver_cpt_code",
 				"type": "DatabricksNotebook",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -325,7 +325,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Transactions",
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/CPT codes",
 					"baseParameters": {
 						"input": {
 							"value": "@pipeline().parameters.name",
@@ -339,7 +339,7 @@
 				}
 			},
 			{
-				"name": "silver_transactions_copy2",
+				"name": "silver_icd_code",
 				"type": "DatabricksNotebook",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -353,7 +353,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Transactions",
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/ICD Code",
 					"baseParameters": {
 						"input": {
 							"value": "@pipeline().parameters.name",
@@ -367,7 +367,7 @@
 				}
 			},
 			{
-				"name": "silver_transactions_copy3",
+				"name": "silver_npi",
 				"type": "DatabricksNotebook",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -381,7 +381,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/Transactions",
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Silver/NPI",
 					"baseParameters": {
 						"input": {
 							"value": "@pipeline().parameters.name",
@@ -409,13 +409,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Untitled Notebook 2025-08-17 13:02:49",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.name",
-							"type": "Expression"
-						}
-					}
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Untitled Notebook 2025-08-17 13:02:49"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
@@ -423,12 +417,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"name": {
-				"type": "string",
-				"defaultValue": "/path/filename"
-			}
-		},
 		"annotations": []
 	}
 }
