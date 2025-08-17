@@ -83,3 +83,15 @@
     ├── silver_to_gold.json
     └── sqldb_to_bronze.json
 └── publish_config.json
+```
+
+## **Technologies Used**
+- **Programming Language:** Python, SQL, Pyspark
+- **Azure Data Factory**
+- **Azure Data Lake**
+- **Azure Databricks**
+- **Azure Key Vault**
+- **Data Sources:**
+    - **Azure SQL Database**
+    - **Azure storage:** ADLS Gen2, Flat files(csv), Azure Delta lake, Parquet.
+    - **API:** ICD code, NPI.
