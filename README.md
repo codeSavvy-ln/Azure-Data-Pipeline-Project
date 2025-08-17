@@ -6,6 +6,10 @@
 ## **Project Overview**  
 This project demonstrates an end-to-end data engineering solution built using Microsoft Azure. The pipeline automates data ingestion, transformation, and storage, providing an efficient and scalable system for managing enterprise data.  
 
+## **Pipeline Architecture**  
+![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/project%20architecture%20snapshot.png)
+
+---
 
 ## **Project Structure**
 ```
@@ -90,10 +94,24 @@ This project demonstrates an end-to-end data engineering solution built using Mi
 ## **Technologies Used**
 - **Programming Language:** Python, SQL, Pyspark
 - **Azure Data Factory**
-- **Azure Data Lake**
 - **Azure Databricks**
 - **Azure Key Vault**
 - **Data Sources:**
     - **Azure SQL Database**
     - **Azure storage:** ADLS Gen2, Flat files(csv), Parquet.
     - **API:** ICD code, NPI.
+
+---
+
+## **How to Use**  
+
+### **1. Prerequisites**  
+- Active Azure Subscription.  
+- Azure Databricks cluster with below specs:
+  - Databricks runtime: 15.4 LTS(includes Apache Spark 3.5.0, Scala 2.12)
+  - Worker Type: Standard_D2ds_v6 - min:1 - Max:1 - Current:0  
+
+### **2. Steps to Set Up**  
+1. Clone this repository:  
+   ```bash
+   git clone https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project.git
