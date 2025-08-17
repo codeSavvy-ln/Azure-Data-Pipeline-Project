@@ -27,6 +27,39 @@
 					"referenceName": "AzureDatabricks1",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "gold_dim_deprtments",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "silver_departments_F",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/singhankit2637@gmail.com/Azure HC_RCM Project/Gold/dim_department",
+					"baseParameters": {
+						"input": {
+							"value": "@activity('silver_departments_F').output",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks1",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
