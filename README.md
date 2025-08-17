@@ -6,7 +6,7 @@
 ## **Project Overview**  
 This project demonstrates an end-to-end data engineering solution built using Microsoft Azure. The pipeline automates data ingestion, transformation, and storage, providing an efficient and scalable system for managing enterprise data.  
 
-## **Pipeline Architecture**  
+## **Project Architecture**  
 ![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/project%20architecture%20snapshot.png)
 
 ---
@@ -100,6 +100,38 @@ This project demonstrates an end-to-end data engineering solution built using Mi
     - **Azure SQL Database**
     - **Azure storage:** ADLS Gen2, Flat files(csv), Parquet.
     - **API:** ICD code, NPI.
+
+---
+
+
+## **Pipeline Architecture (ETL Pipeline Breakdown)**  
+
+[load_config](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/load_config.csv) Main file that holds config related details which will be referenced to implement the Data pipeline.
+
+**Pipeline 1 - emr_pl_src_to_landing**
+
+  - **Lookup Activity** is used to retrieve the data from load_config file. 
+  - **for each activity** will iterate over each row in load_config file and perform the opertions(activity) on it.
+  
+![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/emr_pl_src_to_landing.png)
+
+  - **Get Metadata Activity** checks if the targetpath and tablename from load_config exists in bronze container.
+  - **If Condition** If the output of get metadata activity is true then copy activity is ran to copy the data into archive folder under current date format yyyy/MM/DD.
+  - **If Condition (Fetch_Logs)** checks if the loadtype is full
+    - **If loadtype = Full** takes the data from SQL DB and store it into bronze container in parquet format and also stores the pipeline running details in the audit table
+    - **If loadtype <> Full** fetches the latest loaddate and compare it in the next increamental load activity which copies the data from SQL db into bronze layer in the form of parquet format and then further update the audit table with the latest data.
+
+**Pipeline 2 - silver_to_gold**
+![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/silver_to_gold.png)
+
+ All the code for silver and gold layer stored in databricks notebook can be triggered from ADF itself.
+- **silver** Data is in Delta format here, Data loaded here will be cleaned and SCD type 2 will also be implemented and then this will be sent to the gold layer.
+- **gold** - Data is in Delta format here , Fact and Dimension table are implemented here.
+
+
+1. **Data Ingestion**:  
+   - Ingest raw tables from SQL Server using Azure Data Factory (ADF).  
+	Set up Integration runtime
 
 ---
 
