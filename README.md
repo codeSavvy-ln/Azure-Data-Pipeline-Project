@@ -4,7 +4,7 @@
 ---
 
 ## **Project Overview**  
-This project demonstrates an end-to-end data engineering solution built using Microsoft Azure. The pipeline automates data ingestion, transformation, and storage, providing an efficient and scalable system for managing enterprise data.  
+This project demonstrates an end-to-end data engineering solution built using Microsoft Azure for healthcare revenue cycle management domain. The pipeline automates data ingestion, transformation, and storage, providing an efficient and scalable system for managing enterprise data.  
 
 ## **Project Architecture**  
 ![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/project%20architecture%20snapshot.png)
