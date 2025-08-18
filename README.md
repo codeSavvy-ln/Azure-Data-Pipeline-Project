@@ -106,6 +106,16 @@ This project demonstrates an end-to-end data engineering solution built using Mi
 
 ## **Pipeline Architecture (ETL Pipeline Breakdown)**  
 
+
+1. **Data Ingestion**:  
+   - Ingest raw tables from SQL Server using Azure Data Factory (ADF).  
+	Set up Integration runtime
+
+---
+
+
+
+## **How the Pipeline Works** 
 [load_config](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/load_config.csv) Main file that holds config related details which will be referenced to implement the Data pipeline.
 
 **Pipeline 1 - emr_pl_src_to_landing**
@@ -127,11 +137,6 @@ This project demonstrates an end-to-end data engineering solution built using Mi
  All the code for silver and gold layer stored in databricks notebook can be triggered from ADF itself.
 - **silver** Data is in Delta format here, Data loaded here will be cleaned and SCD type 2 will also be implemented and then this will be sent to the gold layer.
 - **gold** - Data is in Delta format here , Fact and Dimension table are implemented here.
-
-
-1. **Data Ingestion**:  
-   - Ingest raw tables from SQL Server using Azure Data Factory (ADF).  
-	Set up Integration runtime
 
 ---
 
