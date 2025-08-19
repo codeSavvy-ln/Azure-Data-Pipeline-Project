@@ -106,16 +106,20 @@ This project demonstrates an end-to-end data engineering solution built using Mi
 
 ## **Pipeline Architecture (ETL Pipeline Breakdown)**  
 
+### **Step 1: Setting Up the Azure Environment** ⚙️
 
-1. **Data Ingestion**:  
-   - Ingest raw tables from SQL Server using Azure Data Factory (ADF).  
-	Set up Integration runtime
+To start, the following Azure resources were provisioned:
 
----
+- **Azure SQL database:** To store EMR related data in multiple tables under 2 databases (hospital-a,hospital-b)
+- **Azure Data Factory (ADF):** Used for data orchestration and automation.
+- **Azure Storage Account:** Acts as the data lake, storing raw (bronze), transformed (silver), and curated (gold) data.
+- **Azure Databricks:** Performs data transformations and implementing SCD Type2 and Common data management.
+- **Key Vault:** To secure all the keys.
 
+### **Step 2: Implementing the Data Pipeline Using ADF** 🚀
 
+**Azure Data Factory (ADF)** serves as the backbone for orchestrating the data pipeline.
 
-## **How the Pipeline Works** 
 [load_config](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/load_config.csv) Main file that holds config related details which will be referenced to implement the Data pipeline.
 
 **Pipeline 1 - emr_pl_src_to_landing**
@@ -125,11 +129,15 @@ This project demonstrates an end-to-end data engineering solution built using Mi
   
 ![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/emr_pl_src_to_landing.png)
 
-  - **Get Metadata Activity** checks if the targetpath and tablename from load_config exists in bronze container.
-  - **If Condition** If the output of get metadata activity is true then copy activity is ran to copy the data into archive folder under current date format yyyy/MM/DD.
-  - **If Condition (Fetch_Logs)** checks if the loadtype is full
-    - **If loadtype = Full** takes the data from SQL DB and store it into bronze container in parquet format and also stores the pipeline running details in the audit table
-    - **If loadtype <> Full** fetches the latest loaddate and compare it in the next increamental load activity which copies the data from SQL db into bronze layer in the form of parquet format and then further update the audit table with the latest data.
+  - **Within for each activity**
+
+   - **Get Metadata Activity** checks if the targetpath and tablename from load_config exists in bronze container.
+   - **If Condition** If the output of get metadata activity is true then copy activity is ran to copy the data into archive folder under current date format yyyy/MM/DD.
+   - **If Condition (Fetch_Logs)** checks if the loadtype is full
+     - **If loadtype = Full** takes the data from SQL DB and store it into bronze container in parquet format and also stores the pipeline running details in the audit table
+     - **If loadtype <> Full** fetches the latest loaddate and compare it in the next increamental load activity which copies the data from SQL db into bronze layer in the form of parquet format and then further update the audit table with the latest data.
+
+![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/for_each.png)
 
 **Pipeline 2 - silver_to_gold**
 ![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/silver_to_gold.png)
@@ -137,6 +145,13 @@ This project demonstrates an end-to-end data engineering solution built using Mi
  All the code for silver and gold layer stored in databricks notebook can be triggered from ADF itself.
 - **silver** Data is in Delta format here, Data loaded here will be cleaned and SCD type 2 will also be implemented and then this will be sent to the gold layer.
 - **gold** - Data is in Delta format here , Fact and Dimension table are implemented here.
+
+### **Step 3: Data Transformation with Azure Databricks** 🔄
+
+Using Azure Databricks, the raw data from the bronze container was transformed into a structured format.
+---
+
+
 
 ---
 
