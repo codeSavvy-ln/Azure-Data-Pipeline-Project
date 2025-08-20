@@ -154,10 +154,14 @@ Using Azure Databricks, the raw data from the bronze container was transformed i
 - **Audit Table** logs the ADF pipeline details like data_source, tablename, number of rows copied and load date once the pipeline run successfully
 
 - **Mounted** the ADLS with databricks to reteive the data directly from storage account.
----
 
+- Data is taken from ADLS gen2 bronze layer and transformed into delta table .
+- Incremental and full load concept are used while designing the delta table silver layer.
+- Performed Quality checks by adding a column(is_quarantined) to log the value true whenever the key fields like ID is having null value which will help in preventing this bad data going into gold layer
+- Implemented Slowly changing dimension type-2 for table with incremental load type.
 
-
+- Implemented star schema data modeling in the gold layer to design and develop **fact and dimension tables** for optimized analytics.
+![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/fact%20and%20Dim.png)
 ---
 
 ## **How to Use**  
