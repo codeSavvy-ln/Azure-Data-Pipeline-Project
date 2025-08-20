@@ -153,6 +153,7 @@ Using Azure Databricks, the raw data from the bronze container was transformed i
 
 - **Audit Table** logs the ADF pipeline details like data_source, tablename, number of rows copied and load date once the pipeline run successfully
 
+- **Mounted** the ADLS with databricks to reteive the data directly from storage account.
 ---
 
 
