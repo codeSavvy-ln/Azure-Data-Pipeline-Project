@@ -98,7 +98,7 @@ This project demonstrates an end-to-end data engineering solution built using Mi
 - **Azure Key Vault**
 - **Data Sources:**
     - **Azure SQL Database**
-    - **Azure storage:** ADLS Gen2, Flat files(csv), Parquet.
+    - **Azure storage:** ADLS Gen2, Delta Lake.
     - **API:** ICD code, NPI.
 
 ---
@@ -120,7 +120,7 @@ To start, the following Azure resources were provisioned:
 
 **Azure Data Factory (ADF)** serves as the backbone for orchestrating the data pipeline.
 
-[load_config](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/load_config.csv) Main file that holds config related details which will be referenced to implement the Data pipeline.
+[load_config](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/load_config.csv) is the main file that holds config related details which will be referenced to implement the Data pipeline.
 
 **Pipeline 1 - emr_pl_src_to_landing**
 
@@ -129,7 +129,9 @@ To start, the following Azure resources were provisioned:
   
 ![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/emr_pl_src_to_landing.png)
 
-  - **Within for each activity**
+**Within for each activity**
+
+![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/for_each.png)
 
    - **Get Metadata Activity** checks if the targetpath and tablename from load_config exists in bronze container.
    - **If Condition** If the output of get metadata activity is true then copy activity is ran to copy the data into archive folder under current date format yyyy/MM/DD.
@@ -137,7 +139,6 @@ To start, the following Azure resources were provisioned:
      - **If loadtype = Full** takes the data from SQL DB and store it into bronze container in parquet format and also stores the pipeline running details in the audit table
      - **If loadtype <> Full** fetches the latest loaddate and compare it in the next increamental load activity which copies the data from SQL db into bronze layer in the form of parquet format and then further update the audit table with the latest data.
 
-![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/for_each.png)
 
 **Pipeline 2 - silver_to_gold**
 ![logo](https://github.com/codeSavvy-ln/Azure-Data-Pipeline-Project/blob/main/Images/silver_to_gold.png)
@@ -149,6 +150,9 @@ To start, the following Azure resources were provisioned:
 ### **Step 3: Data Transformation with Azure Databricks** 🔄
 
 Using Azure Databricks, the raw data from the bronze container was transformed into a structured format.
+
+- **Audit Table** logs the ADF pipeline details like data_source, tablename, number of rows copied and load date once the pipeline run successfully
+
 ---
 
 
