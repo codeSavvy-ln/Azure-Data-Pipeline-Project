@@ -5,7 +5,13 @@
 		"factoryName": {
 			"value": "ADF-HC-RCM-DEV-Project"
 		},
+		"PostgreSql1_password": {
+			"value": ""
+		},
 		"hosa_sql_ls_password": {
+			"value": ""
+		},
+		"SqlServer1_password": {
 			"value": ""
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
@@ -17,6 +23,15 @@
 		"AzureKeyVault_ls_properties_typeProperties_baseUrl": {
 			"value": "https://key-vault-hc-rcm.vault.azure.net/"
 		},
+		"PostgreSql1_properties_typeProperties_server": {
+			"value": "PostgreSQL 16"
+		},
+		"PostgreSql1_properties_typeProperties_database": {
+			"value": "test"
+		},
+		"PostgreSql1_properties_typeProperties_username": {
+			"value": "ankit"
+		},
 		"hosa_sql_ls_properties_typeProperties_server": {
 			"value": "hcrcmsqldb.database.windows.net"
 		},
@@ -25,6 +40,15 @@
 		},
 		"hosa_sql_ls_properties_typeProperties_userName": {
 			"value": "ankit"
+		},
+		"SqlServer1_properties_typeProperties_server": {
+			"value": "LAPTOP-0PK57A6C\\SQLEXPRESS"
+		},
+		"SqlServer1_properties_typeProperties_database": {
+			"value": "employee"
+		},
+		"SqlServer1_properties_typeProperties_userName": {
+			"value": "sqlproject"
 		},
 		"containerUri": {
 			"value": ""
