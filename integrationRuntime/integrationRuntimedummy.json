@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimedummy",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
